@@ -1,3 +1,4 @@
+import requests
 import logging
 import azure.functions as func
 
@@ -15,3 +16,19 @@ def timer_trigger_log(myTimer: func.TimerRequest) -> None:
 
 
 # FUNCTION 2 
+# timer http que recebe um parametro e o imprimi.
+@app.route(route="parametro", methods=["GET"])
+def http_parametro(req: func.HttpRequest) -> func.HttpResponse:
+
+    parametro = req.params.get("parametro")
+
+    logging.info(f"Parâmetro recebido: {parametro}")
+
+    return func.HttpResponse("Parâmetro recebido.")
+
+
+# FUNCTION 3
+#
+
+# FUNCTION 4
+#
