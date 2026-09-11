@@ -37,3 +37,17 @@ def http_resposta(req: func.HttpRequest) -> func.HttpResponse:
     return func.HttpResponse(f"{mensagem} - resposta da Function 3")
 
 
+# FUNCTION 4
+# timer trigger que chama a function 3
+@app.timer_trigger(schedule="0 */2 * * * *", arg_name="myTimer", run_on_startup=False,
+                use_monitor=False)
+def timer_http(myTimer: func.TimerRequest) -> None:
+
+    url = "http://localhost:7071/api/resposta" # pra rodar localmente
+
+    resposta = requests.get(
+        url,
+        params={"mensagem": "Olá da Function 4"}
+    )
+
+    logging.info(f"Resposta da Function 3: {resposta.text}")
