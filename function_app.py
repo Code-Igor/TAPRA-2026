@@ -16,7 +16,7 @@ def timer_trigger_log(myTimer: func.TimerRequest) -> None:
 
 
 # FUNCTION 2 
-# timer http que recebe um parametro e o imprimi.
+# trigger http que recebe um parametro e o imprimi.
 @app.route(route="parametro", methods=["GET"])
 def http_parametro(req: func.HttpRequest) -> func.HttpResponse:
 
@@ -28,7 +28,12 @@ def http_parametro(req: func.HttpRequest) -> func.HttpResponse:
 
 
 # FUNCTION 3
-#
+# trigger http get, que vai ser chamado pelo trigger 4 
+@app.route(route="resposta", methods=["GET"])
+def http_resposta(req: func.HttpRequest) -> func.HttpResponse:
 
-# FUNCTION 4
-#
+    mensagem = req.params.get("mensagem")
+
+    return func.HttpResponse(f"{mensagem} - resposta da Function 3")
+
+
