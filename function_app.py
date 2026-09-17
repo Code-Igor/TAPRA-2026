@@ -8,7 +8,7 @@ app = func.FunctionApp()
 # timertrigger que impri um log
 @app.timer_trigger(schedule="*/2 * * * *", arg_name="myTimer", run_on_startup=False,
               use_monitor=False) 
-def timer_trigger_log(myTimer: func.TimerRequest) -> None:
+def timer_imprimir_log(myTimer: func.TimerRequest) -> None:
     if myTimer.past_due:
         logging.info('Imprimiu atrasado.')
 
@@ -18,36 +18,38 @@ def timer_trigger_log(myTimer: func.TimerRequest) -> None:
 # FUNCTION 2 
 # trigger http que recebe um parametro e o imprimi.
 @app.route(route="parametro", methods=["GET"])
-def http_parametro(req: func.HttpRequest) -> func.HttpResponse:
+def http_imprimir_parametro(req: func.HttpRequest) -> func.HttpResponse:
 
     parametro = req.params.get("parametro")
 
-    logging.info(f"Parâmetro recebido: {parametro}")
+    logging.info(f"Log do parâmetro recebido: {parametro}")
 
-    return func.HttpResponse("Parâmetro recebido.")
+    return func.HttpResponse(f"Parâmetro recebido: {parametro}")
 
 
 # FUNCTION 3
-# trigger http get, que vai ser chamado pelo trigger 4 
-@app.route(route="resposta", methods=["GET"])
-def http_resposta(req: func.HttpRequest) -> func.HttpResponse:
+# trigger http get, que vai ser chamado pelo timer trigger(function 4) 
+@app.route(route="mensagem", methods=["GET"])
+def http_mensagem(req: func.HttpRequest) -> func.HttpResponse:
 
-    mensagem = req.params.get("mensagem")
+    mensagem_timer = req.params.get("mensagem")
 
-    return func.HttpResponse(f"{mensagem} - resposta da Function 3")
+    return func.HttpResponse(f"{mensagem_timer} - mensagem da Function 3 (httptrigger)")
 
 
 # FUNCTION 4
-# timer trigger que chama a function 3
+# timer trigger que chama (chamada HTTP) a function 3 
 @app.timer_trigger(schedule="0 */2 * * * *", arg_name="myTimer", run_on_startup=False,
                 use_monitor=False)
-def timer_http(myTimer: func.TimerRequest) -> None:
+def timer_chamar_http(myTimer: func.TimerRequest) -> None:
 
-    url = "http://localhost:7071/api/resposta" # pra rodar localmente
+    url = "http://localhost:7071/api/mensagem" # pra rodar localmente
 
-    resposta = requests.get(
+
+    resposta_http_mensagem = requests.get(
         url,
-        params={"mensagem": "Olá da Function 4"}
+        params={"mensagem": "Olá da Function 4 (timertrigger)"}
     )
 
-    logging.info(f"Resposta da Function 3: {resposta.text}")
+    #aqui precisa ser .text para mostrar como string
+    logging.info(f"Resposta da Function 3: {resposta_http_mensagem.text}")
