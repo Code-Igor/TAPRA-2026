@@ -29,7 +29,7 @@ def http_imprimir_parametro(req: func.HttpRequest) -> func.HttpResponse:
 
 # FUNCTION 3
 # trigger http get, que vai ser chamado pelo timer trigger(function 4) 
-@app.route(route="resposta", methods=["GET"])
+@app.route(route="mensagem", methods=["GET"])
 def http_mensagem(req: func.HttpRequest) -> func.HttpResponse:
 
     mensagem_timer = req.params.get("mensagem")
@@ -43,7 +43,7 @@ def http_mensagem(req: func.HttpRequest) -> func.HttpResponse:
                 use_monitor=False)
 def timer_chamar_http(myTimer: func.TimerRequest) -> None:
 
-    url = "http://localhost:7071/api/" # pra rodar localmente
+    url = "http://localhost:7071/api/mensagem" # pra rodar localmente
 
 
     resposta_http_mensagem = requests.get(
